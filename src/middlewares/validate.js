@@ -1,0 +1,34 @@
+const Joi = require('joi');
+
+const validate = (schema) => {
+    return (req, res, next) => {
+        const result = Joi.validate(req.body, schema);
+        if (result.error) {
+            return res.status(400).json(result.error);
+        }
+        if (!req.value) { req.value = {}; }
+        req.value['body'] = result.value;
+        next();
+    }
+}
+
+const schemas = {
+    createFakeDataSchema: Joi.object().keys({
+        title: Joi.string().required(),
+        body: Joi.string().required(),
+        userId: Joi.number().required()
+    }),
+    updateFakeDataSchema: Joi.object().keys({
+        title: Joi.string().required(),
+        body: Joi.string().required(),
+        userId: Joi.number().required()
+    }),
+    getFakeDataByIdSchema: Joi.object().keys({
+        id: Joi.number().required()
+    })
+}
+
+module.exports = {
+    validate,
+    schemas
+}
